@@ -11,9 +11,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        fromDatabase:
-          name: vsms-database
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: AWS_ACCESS_KEY_ID
@@ -50,8 +48,3 @@ services:
           name: vsms-backend
           property: host
 
-databases:
-  - name: vsms-database
-    databaseName: vehicle_sales
-    user: vsms_user
-    plan: free
