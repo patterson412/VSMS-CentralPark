@@ -1,0 +1,57 @@
+services:
+  # Backend API Service
+  - type: web
+    name: vsms-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: vsms-database
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_REGION
+        value: us-east-1
+      - key: AWS_S3_BUCKET_NAME
+        sync: false
+      - key: AWS_CLOUDFRONT_URL
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+
+  # Frontend Web Service
+  - type: web
+    name: vsms-frontend
+    runtime: docker
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: vsms-backend
+          property: host
+      - key: BACKEND_URL
+        fromService:
+          type: web
+          name: vsms-backend
+          property: host
+
+databases:
+  - name: vsms-database
+    databaseName: vehicle_sales
+    user: vsms_user
+    plan: free

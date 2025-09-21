@@ -1,0 +1,43 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      target: development
+    command: npm run start:dev
+    env_file:
+      - ./backend/.env
+    ports:
+      - '3001:3001'
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - mysql
+
+  frontend:
+    build:
+      context: ./frontend
+      target: development
+    command: npm run dev
+    env_file:
+      - ./frontend/.env.local
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - '3306:3306'
+
+volumes:
+  mysql_data:
