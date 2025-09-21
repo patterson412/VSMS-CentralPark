@@ -93,6 +93,3 @@ export interface UploadResponse {
   imageUrls: string[];
   uploadedCount: number;
 }
-
-
-// VehicleFormData is defined in @/lib/validations.ts using Zod inference

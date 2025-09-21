@@ -142,6 +142,16 @@ export const vehicleApi = {
     return handleResponse<{ description: string }>(response);
   },
 
+  generateDescriptionPreview: async (vehicleData: CreateVehicleDto): Promise<{ description: string }> => {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${getApiBaseUrl()}/vehicles/generate-description-preview`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(vehicleData),
+    });
+    return handleResponse<{ description: string }>(response);
+  },
+
   getStats: async (): Promise<VehicleStats> => {
     const response = await fetch(`${getApiBaseUrl()}/vehicles/stats`);
     return handleResponse<VehicleStats>(response);

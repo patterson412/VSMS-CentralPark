@@ -63,7 +63,7 @@ function VehiclesPageContent() {
     minPrice: searchParams.get('minPrice') ? parseInt(searchParams.get('minPrice')!) : undefined,
     maxPrice: searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice')!) : undefined,
     page: searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1,
-    limit: searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 12,
+    limit: searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 6,
     sortBy: (searchParams.get('sortBy') as any) || 'createdAt',
     sortOrder: (searchParams.get('sortOrder') as 'ASC' | 'DESC') || 'DESC',
   });
@@ -159,7 +159,7 @@ function VehiclesPageContent() {
   const clearFilters = () => {
     setFilters({
       page: 1,
-      limit: 12,
+      limit: 6,
       sortBy: 'createdAt',
       sortOrder: 'DESC',
     });
@@ -539,7 +539,7 @@ function VehiclesPageContent() {
             page={vehiclesData.page}
             onChange={(_e, page) => handleFilterChange('page', page)}
             color="primary"
-            size={{ xs: 'medium', sm: 'large' } as any}
+            size="medium"
             sx={{
               '& .MuiPaginationItem-root': {
                 fontSize: { xs: '0.875rem', sm: '1rem' }

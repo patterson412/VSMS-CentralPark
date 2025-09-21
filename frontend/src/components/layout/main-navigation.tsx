@@ -77,15 +77,20 @@ export function MainNavigation() {
             href={item.href}
             onClick={handleDrawerToggle}
             sx={{
+              color: 'text.primary',
+              textDecoration: 'none',
               '&:hover': {
-                bgcolor: 'primary.50',
-                color: 'primary.main'
+                bgcolor: (theme) => theme.palette.primary[50],
+                color: 'primary.main',
+                '& .nav-icon': {
+                  color: 'primary.main'
+                }
               },
               transition: 'all 0.2s ease-in-out'
             }}
           >
             {item.icon && (
-              <Box sx={{ mr: 1.5, color: 'text.secondary' }}>
+              <Box sx={{ mr: 1.5, color: 'text.secondary' }} className="nav-icon">
                 {item.icon}
               </Box>
             )}
@@ -99,14 +104,17 @@ export function MainNavigation() {
           }}
           sx={{
             '&:hover': {
-              bgcolor: 'primary.50',
-              color: 'primary.main'
+              bgcolor: (theme) => theme.palette.primary[50],
+              color: 'primary.main',
+              '& .nav-icon': {
+                color: 'primary.main'
+              }
             },
             cursor: 'pointer',
             transition: 'all 0.2s ease-in-out'
           }}
         >
-          <Box sx={{ mr: 1.5, color: 'text.secondary' }}>
+          <Box sx={{ mr: 1.5, color: 'text.secondary' }} className="nav-icon">
             <Login />
           </Box>
           <ListItemText primary="Admin Login" />
@@ -135,7 +143,7 @@ export function MainNavigation() {
                 }
               }}
             >
-              Vehicle Sales MS
+              Central Park Vehicles
             </Typography>
 
             {/* Desktop Navigation */}

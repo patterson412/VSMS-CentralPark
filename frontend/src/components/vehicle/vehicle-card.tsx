@@ -24,7 +24,7 @@ import { Vehicle } from '@/types';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, getVehicleTypeColor } from '@/lib/utils';
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -59,22 +59,6 @@ export function VehicleCard({
     action();
   };
 
-  const getVehicleTypeColor = (type: string) => {
-    switch (type.toLowerCase()) {
-      case 'car':
-        return 'primary';
-      case 'suv':
-        return 'secondary';
-      case 'truck':
-        return 'error';
-      case 'bike':
-        return 'warning';
-      case 'van':
-        return 'info';
-      default:
-        return 'default';
-    }
-  };
 
   const primaryImage = vehicle.images?.[0];
 
@@ -141,10 +125,12 @@ export function VehicleCard({
               size="small"
               onClick={handleMenuClick}
               sx={{
-                bgcolor: 'background.paper',
-                opacity: 0.8,
+                bgcolor: 'rgba(255, 255, 255, 0.92)',
+                backdropFilter: 'blur(6px)',
+                boxShadow: 'rgba(0, 0, 0, 0.1) 0px 2px 4px',
                 '&:hover': {
-                  opacity: 0.95
+                  bgcolor: 'rgba(255, 255, 255, 1)',
+                  boxShadow: 'rgba(0, 0, 0, 0.15) 0px 4px 12px',
                 }
               }}
             >

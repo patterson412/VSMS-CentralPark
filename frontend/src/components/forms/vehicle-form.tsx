@@ -26,11 +26,10 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ImageUpload } from './image-upload';
-import { FormErrorBoundary } from '@/components/error-boundary';
 import { vehicleFormSchema, VehicleFormData, vehicleTypes, commonBrands, commonColors } from '@/lib/validations';
 import { Vehicle, CreateVehicleDto, UpdateVehicleDto } from '@/types';
 import { useCreateVehicle, useUpdateVehicle, useGenerateDescription } from '@/hooks/use-vehicles';
-import { awsApi } from '@/lib/api';
+import { awsApi, vehicleApi } from '@/lib/api';
 import { toast } from 'react-hot-toast';
 
 interface VehicleFormProps {
@@ -116,7 +115,6 @@ export function VehicleForm({ vehicle, onSuccess, onCancel }: VehicleFormProps) 
       try {
         setGeneratingDescription(true);
         await generateDescriptionMutation.mutateAsync(vehicle.id);
-        // The description will be updated through the mutation's onSuccess
         toast.success('Description generated successfully');
       } catch (error) {
         console.error('Generate description error:', error);
@@ -124,16 +122,27 @@ export function VehicleForm({ vehicle, onSuccess, onCancel }: VehicleFormProps) 
         setGeneratingDescription(false);
       }
     } else {
-      // For new vehicles, generate a preview description
+      // For new vehicles, use the AI API with current form data
       setGeneratingDescription(true);
       try {
-        // Simulate AI generation with a structured template
-        const generatedDescription = `Experience the perfect blend of reliability and performance with this stunning ${year} ${brand} ${model}. This ${color.toLowerCase()} ${type.toLowerCase()} features a ${engineSize} engine that delivers both power and efficiency. Whether you're commuting to work or embarking on weekend adventures, this vehicle offers the comfort and dependability you deserve. With its sleek design and proven track record, this ${brand} ${model} represents exceptional value at $${price.toLocaleString()}. Don't miss this opportunity to own a vehicle that combines style, performance, and reliability in one impressive package.`;
+        const vehicleData = {
+          type,
+          brand,
+          model,
+          color,
+          engineSize,
+          year,
+          price,
+          description: '', // Will be replaced by AI
+          images: [],
+        };
 
-        setValue('description', generatedDescription);
-        toast.success('Description generated successfully');
+        const result = await vehicleApi.generateDescriptionPreview(vehicleData);
+        setValue('description', result.description);
+        toast.success('AI description generated successfully');
       } catch (error) {
-        toast.error('Failed to generate description');
+        console.error('Generate description error:', error);
+        toast.error('Failed to generate AI description');
       } finally {
         setGeneratingDescription(false);
       }
@@ -151,7 +160,7 @@ export function VehicleForm({ vehicle, onSuccess, onCancel }: VehicleFormProps) 
           // Extract S3 keys from CloudFront URLs and delete them
           const deletePromises = imagesToDelete.map(async (imageUrl) => {
             try {
-              // Extract S3 key from CloudFront URL (assuming format: https://domain/key)
+              // Extract S3 key from CloudFront URL
               const url = new URL(imageUrl);
               const key = url.pathname.substring(1); // Remove leading slash
               await awsApi.deleteImage(key);
@@ -188,7 +197,7 @@ export function VehicleForm({ vehicle, onSuccess, onCancel }: VehicleFormProps) 
             setUploadingImages(false);
           }
         } else {
-          // For new vehicles, we'll upload after creating the vehicle
+          // For new vehicles, upload after creating the vehicle
           // Just proceed with vehicle creation first
           setUploadingImages(false);
         }
@@ -240,8 +249,7 @@ export function VehicleForm({ vehicle, onSuccess, onCancel }: VehicleFormProps) 
   const isLoading = isSubmitting || uploadingImages || createVehicleMutation.isPending || updateVehicleMutation.isPending;
 
   return (
-    <FormErrorBoundary onError={(error) => toast.error('Form error: ' + error.message)}>
-      <Box>
+    <Box>
         <Paper sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
         <Typography
           variant="h5"
@@ -511,6 +519,7 @@ export function VehicleForm({ vehicle, onSuccess, onCancel }: VehicleFormProps) 
             <ImageUpload
               onImagesChange={setSelectedImages}
               onExistingImagesChange={handleExistingImagesChange}
+              selectedFiles={selectedImages}
               maxImages={5}
               initialImages={existingImages}
               disabled={isLoading}
@@ -565,6 +574,5 @@ export function VehicleForm({ vehicle, onSuccess, onCancel }: VehicleFormProps) 
         </form>
         </Paper>
       </Box>
-    </FormErrorBoundary>
   );
 }

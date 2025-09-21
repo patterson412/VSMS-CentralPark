@@ -19,7 +19,7 @@ export default function HomePage() {
                 fontWeight: 700,
                 fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4rem' }
               }}>
-                Vehicle Sales Management
+                Your Vehicle Dream Starts Now!
               </Typography>
               <Typography variant="h5" sx={{
                 mb: { xs: 6, sm: 8 },
@@ -29,7 +29,7 @@ export default function HomePage() {
                 fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.5rem' },
                 px: { xs: 2, sm: 0 }
               }}>
-                Discover your perfect vehicle with AI-powered descriptions and comprehensive inventory management
+                Discover your perfect vehicle with AI-powered descriptions and comprehensive sorting
               </Typography>
               <Box sx={{
                 display: 'flex',
@@ -100,7 +100,7 @@ export default function HomePage() {
               color: 'text.secondary',
               fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' }
             }}>
-              Experience the future of vehicle sales management
+              Experience the ease of finding your desired Wheels!
             </Typography>
           </Box>
 

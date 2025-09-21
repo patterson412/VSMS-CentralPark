@@ -10,6 +10,7 @@ import {
   LinearProgress,
   Alert,
 } from '@mui/material';
+import { imageUploadSchema } from '@/lib/validations';
 import Grid from '@mui/material/Grid2';
 import {
   CloudUpload,
@@ -18,13 +19,12 @@ import {
   Close,
 } from '@mui/icons-material';
 import Image from 'next/image';
-import { toast } from 'react-hot-toast';
 
 interface ImageUploadProps {
   onImagesChange: (files: File[]) => void;
   onExistingImagesChange?: (imageUrls: string[]) => void;
+  selectedFiles?: File[];
   maxImages?: number;
-  maxSizePerImage?: number; // in bytes
   initialImages?: string[];
   disabled?: boolean;
   uploading?: boolean;
@@ -34,71 +34,46 @@ export function ImageUpload({
   onImagesChange,
   onExistingImagesChange,
   maxImages = 5,
-  maxSizePerImage = 5 * 1024 * 1024, // 5MB
+  selectedFiles = [],
   initialImages = [],
   disabled = false,
   uploading = false,
 }: ImageUploadProps) {
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-  const [existingImages, setExistingImages] = useState<string[]>(initialImages);
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState<string>('');
 
-  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-
-  const validateFile = (file: File): string | null => {
-    if (!allowedTypes.includes(file.type)) {
-      return `${file.name}: Invalid file type. Only JPEG, PNG, and WebP are allowed.`;
-    }
-    if (file.size > maxSizePerImage) {
-      return `${file.name}: File too large. Maximum size is ${Math.round(maxSizePerImage / 1024 / 1024)}MB.`;
-    }
-    return null;
-  };
-
   const processFiles = useCallback((files: FileList | File[]) => {
     const fileArray = Array.from(files);
-    const totalFiles = selectedFiles.length + fileArray.length + existingImages.length;
+    const totalFiles = selectedFiles.length + fileArray.length + initialImages.length;
 
     if (totalFiles > maxImages) {
       setError(`Maximum ${maxImages} images allowed. You're trying to add ${fileArray.length} more files.`);
       return;
     }
 
-    const validFiles: File[] = [];
-    const errors: string[] = [];
+    const validation = imageUploadSchema.safeParse({ files: fileArray });
 
-    fileArray.forEach(file => {
-      const validation = validateFile(file);
-      if (validation) {
-        errors.push(validation);
-      } else {
-        validFiles.push(file);
-      }
-    });
-
-    if (errors.length > 0) {
-      setError(errors.join(' '));
+    if (!validation.success) {
+      const errorMessage = validation.error.errors[0]?.message || 'Invalid files';
+      setError(errorMessage);
       return;
     }
 
     setError('');
 
-    // Create preview URLs
     const newPreviewUrls: string[] = [];
-    validFiles.forEach(file => {
+    fileArray.forEach(file => {
       const url = URL.createObjectURL(file);
       newPreviewUrls.push(url);
     });
 
-    const updatedFiles = [...selectedFiles, ...validFiles];
+    const updatedFiles = [...selectedFiles, ...fileArray];
     const updatedPreviews = [...previewUrls, ...newPreviewUrls];
 
-    setSelectedFiles(updatedFiles);
-    setPreviewUrls(updatedPreviews);
     onImagesChange(updatedFiles);
-  }, [selectedFiles, previewUrls, existingImages.length, maxImages, maxSizePerImage, onImagesChange]);
+    setPreviewUrls(updatedPreviews);
+  }, [selectedFiles, previewUrls, initialImages.length, maxImages, onImagesChange]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -145,14 +120,12 @@ export function ImageUpload({
     // Revoke the object URL to free memory
     URL.revokeObjectURL(previewUrls[index]);
 
-    setSelectedFiles(newFiles);
-    setPreviewUrls(newPreviews);
     onImagesChange(newFiles);
+    setPreviewUrls(newPreviews);
   };
 
   const removeExistingImage = (index: number) => {
-    const newExistingImages = existingImages.filter((_, i) => i !== index);
-    setExistingImages(newExistingImages);
+    const newExistingImages = initialImages.filter((_, i) => i !== index);
     onExistingImagesChange?.(newExistingImages);
   };
 
@@ -160,10 +133,9 @@ export function ImageUpload({
     // Revoke all object URLs
     previewUrls.forEach(url => URL.revokeObjectURL(url));
 
-    setSelectedFiles([]);
+    onImagesChange([]);
     setPreviewUrls([]);
     setError('');
-    onImagesChange([]);
   };
 
   return (
@@ -224,14 +196,14 @@ export function ImageUpload({
             fontSize: { xs: '0.75rem', sm: '0.875rem' },
             px: { xs: 1, sm: 0 }
           }}>
-            Maximum {maxImages} images • Max {Math.round(maxSizePerImage / 1024 / 1024)}MB each • JPEG, PNG, WebP
+            Maximum {maxImages} images • Max 5MB each • JPEG, PNG, WebP
           </Typography>
 
           <Button
             variant="contained"
             component="label"
             htmlFor="image-upload-input"
-            disabled={disabled || (selectedFiles.length + existingImages.length) >= maxImages}
+            disabled={disabled || (selectedFiles.length + initialImages.length) >= maxImages}
             startIcon={<ImageIcon />}
             sx={{
               px: { xs: 3, sm: 4 },
@@ -262,7 +234,7 @@ export function ImageUpload({
       )}
 
       {/* Image Previews */}
-      {(selectedFiles.length > 0 || existingImages.length > 0) && (
+      {(selectedFiles.length > 0 || initialImages.length > 0) && (
         <Box sx={{ mt: { xs: 2, sm: 3 } }}>
           <Box sx={{
             display: 'flex',
@@ -273,7 +245,7 @@ export function ImageUpload({
             mb: 2
           }}>
             <Typography variant="h6" sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
-              Selected Images ({selectedFiles.length + existingImages.length}/{maxImages})
+              Selected Images ({selectedFiles.length + initialImages.length}/{maxImages})
             </Typography>
             {selectedFiles.length > 0 && (
               <Button
@@ -294,7 +266,7 @@ export function ImageUpload({
 
           <Grid container spacing={{ xs: 1.5, sm: 2 }}>
             {/* Existing Images (from server) */}
-            {existingImages.map((imageUrl, index) => (
+            {initialImages.map((imageUrl, index) => (
               <Grid size={{ xs: 6, sm: 4, md: 3 }} key={`existing-${index}`}>
                 <Paper
                   sx={{
@@ -356,7 +328,7 @@ export function ImageUpload({
                     position: 'relative',
                     overflow: 'hidden',
                     borderRadius: 2,
-                    '&:hover > div': {
+                    '&:hover .remove-btn': {
                       opacity: 1
                     }
                   }}
@@ -369,7 +341,7 @@ export function ImageUpload({
                       style={{ objectFit: 'cover', borderRadius: 4 }}
                       sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
                     />
-                    <Box sx={{ position: 'absolute', top: 8, right: 8, opacity: 0, transition: 'opacity 0.2s ease-in-out' }}>
+                    <Box className="remove-btn" sx={{ position: 'absolute', top: 8, right: 8, opacity: 0, zIndex: 10, transition: 'opacity 0.2s ease-in-out' }}>
                       <IconButton
                         size="small"
                         sx={{

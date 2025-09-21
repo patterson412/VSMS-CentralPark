@@ -63,3 +63,29 @@ export function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength) + '...';
 }
+
+/**
+ * Gets the appropriate color for vehicle type chips
+ * @param type - Vehicle type
+ * @returns MUI chip color
+ */
+export function getVehicleTypeColor(type: string) {
+  switch (type.toLowerCase()) {
+    case 'car':
+      return 'primary';
+    case 'suv':
+      return 'success';
+    case 'truck':
+      return 'warning';
+    case 'bike':
+      return 'error';
+    case 'van':
+      return 'info';
+    case 'motorcycle':
+      return 'error';
+    case 'electric vehicle':
+      return 'success';
+    default:
+      return 'default';
+  }
+}

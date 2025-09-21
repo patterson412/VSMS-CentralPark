@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import { Providers } from '@/providers';
-import { GlobalErrorBoundary } from '@/components/error-boundary';
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
@@ -25,9 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <div id="__next">
-          <GlobalErrorBoundary>
-            <Providers>{children}</Providers>
-          </GlobalErrorBoundary>
+          <Providers>{children}</Providers>
         </div>
       </body>
     </html>

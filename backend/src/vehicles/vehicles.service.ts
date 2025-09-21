@@ -45,12 +45,11 @@ export class VehiclesService {
    */
   async findAll(filters?: VehicleFiltersDto): Promise<PaginatedVehicles> {
     const page = filters?.page || 1;
-    const limit = filters?.limit || 10;
+    const limit = filters?.limit || 6;
     const skip = (page - 1) * limit;
 
     const queryBuilder = this.vehicleRepository.createQueryBuilder("vehicle");
 
-    // Apply filters
     if (filters?.type) {
       queryBuilder.andWhere("vehicle.type = :type", { type: filters.type });
     }
@@ -187,12 +186,10 @@ export class VehiclesService {
     const vehicle = await this.findOne(id);
 
     try {
-      // Delete associated images from S3 first
       if (vehicle.images && vehicle.images.length > 0) {
         await this.deleteVehicleImages(vehicle.images);
       }
 
-      // Then delete the vehicle from database
       await this.vehicleRepository.remove(vehicle);
     } catch (error) {
       throw new BadRequestException("Failed to delete vehicle");
@@ -224,18 +221,35 @@ export class VehiclesService {
     }
   }
 
+  async generateDescriptionFromData(vehicleData: CreateVehicleDto): Promise<{ description: string }> {
+    try {
+      
+      const tempVehicle = {
+        ...vehicleData,
+        id: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      } as Vehicle;
+
+      const description = await this.openaiService.generateVehicleDescription(tempVehicle);
+      return { description };
+    } catch (error) {
+      throw new InternalServerErrorException(
+        "Failed to generate vehicle description",
+      );
+    }
+  }
+
   async bulkDelete(ids: string[]): Promise<{ deleted: number }> {
     if (!ids || ids.length === 0) {
       throw new BadRequestException("No vehicle IDs provided");
     }
 
     try {
-      // First, get all vehicles to delete their images
       const vehicles = await this.vehicleRepository.findBy({
         id: In(ids),
       });
 
-      // Collect all image URLs from all vehicles
       const allImageUrls: string[] = [];
       vehicles.forEach((vehicle) => {
         if (vehicle.images && vehicle.images.length > 0) {
@@ -243,12 +257,10 @@ export class VehiclesService {
         }
       });
 
-      // Delete all images from S3
       if (allImageUrls.length > 0) {
         await this.deleteVehicleImages(allImageUrls);
       }
 
-      // Then delete the vehicles from database
       const result = await this.vehicleRepository.delete(ids);
       return { deleted: result.affected || 0 };
     } catch (error) {
@@ -282,7 +294,6 @@ export class VehiclesService {
           .getCount(),
       ]);
 
-    // Convert vehiclesByType to match frontend expectations
     const vehicleTypes = byType.map((item) => ({
       type: item.type,
       count: parseInt(item.count, 10), // Convert string count to number
@@ -290,9 +301,9 @@ export class VehiclesService {
 
     return {
       totalVehicles: total,
-      vehicleTypes, // Changed from vehiclesByType to vehicleTypes
+      vehicleTypes,
       averagePrice: parseFloat(avgPrice?.avgPrice || "0"),
-      totalValue: parseFloat(totalValue?.totalValue || "0"), // Added totalValue
+      totalValue: parseFloat(totalValue?.totalValue || "0"),
       recentlyAdded: recentCount,
     };
   }
@@ -306,9 +317,8 @@ export class VehiclesService {
     try {
       const deletePromises = imageUrls.map(async (imageUrl) => {
         try {
-          // Extract S3 key from CloudFront URL
           const url = new URL(imageUrl);
-          const key = url.pathname.substring(1); // Remove leading slash
+          const key = url.pathname.substring(1);
           await this.awsService.deleteImage(key);
         } catch (deleteError) {
           console.error(
@@ -316,15 +326,12 @@ export class VehiclesService {
             imageUrl,
             deleteError,
           );
-          // Don't throw - allow other deletions to continue
         }
       });
 
-      // Wait for all deletions to complete (or fail)
       await Promise.allSettled(deletePromises);
     } catch (error) {
       console.error("Error during bulk image deletion:", error);
-      // Don't throw - vehicle deletion should continue even if image cleanup fails
     }
   }
 }

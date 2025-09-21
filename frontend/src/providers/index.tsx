@@ -20,22 +20,22 @@ export function Providers({ children }: ProvidersProps) {
             toastOptions={{
               duration: 4000,
               style: {
-                background: '#ffffff', // matches theme.palette.background.paper
-                color: '#1e293b', // matches theme.palette.text.primary
-                border: '1px solid #e2e8f0', // light gray border
-                borderRadius: '8px', // matches theme.shape.borderRadius
+                background: '#ffffff',
+                color: '#1e293b',
+                border: '1px solid #e2e8f0',
+                borderRadius: '8px',
                 padding: '12px 16px',
               },
               success: {
                 iconTheme: {
-                  primary: '#14b8a6', // matches theme.palette.primary.main
-                  secondary: '#ffffff', // matches theme.palette.secondary.main
+                  primary: '#14b8a6',
+                  secondary: '#ffffff',
                 },
               },
               error: {
                 iconTheme: {
-                  primary: '#ef4444', // standard error red
-                  secondary: '#ffffff', // matches theme.palette.secondary.main
+                  primary: '#ef4444',
+                  secondary: '#ffffff',
                 },
               },
             }}

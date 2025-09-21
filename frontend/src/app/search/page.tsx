@@ -47,7 +47,7 @@ function SearchPageContent() {
   const [filters, setFilters] = useState<VehicleFilters>({
     search: initialQuery,
     page: 1,
-    limit: 12,
+    limit: 6,
     sortBy: 'createdAt',
     sortOrder: 'DESC',
   });
@@ -128,7 +128,7 @@ function SearchPageContent() {
     setSearchQuery('');
     setFilters({
       page: 1,
-      limit: 12,
+      limit: 6,
       sortBy: 'createdAt',
       sortOrder: 'DESC',
     });

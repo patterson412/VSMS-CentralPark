@@ -17,7 +17,6 @@ import { MainLayout } from '@/components/layout/main-layout';
 import {
   ArrowBack,
   Share,
-  Favorite,
   DirectionsCar,
   DateRange,
   Palette,
@@ -30,7 +29,8 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { useState } from 'react';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, getVehicleTypeColor } from '@/lib/utils';
+import { toast } from 'react-hot-toast';
 
 export default function VehicleDetailsPage() {
   const params = useParams();
@@ -44,22 +44,17 @@ export default function VehicleDetailsPage() {
     setCurrentImageIndex(index);
   };
 
-  const getVehicleTypeColor = (type: string) => {
-    switch (type.toLowerCase()) {
-      case 'car':
-        return 'primary';
-      case 'suv':
-        return 'secondary';
-      case 'truck':
-        return 'error';
-      case 'bike':
-        return 'warning';
-      case 'van':
-        return 'info';
-      default:
-        return 'default';
+  const handleShare = async () => {
+    try {
+      const url = window.location.href;
+      await navigator.clipboard.writeText(url);
+      toast.success('Link copied to clipboard!');
+    } catch (error) {
+      console.error('Failed to copy to clipboard:', error);
+      toast.error('Failed to copy link');
     }
   };
+
 
   if (isLoading) {
     return (
@@ -148,11 +143,12 @@ export default function VehicleDetailsPage() {
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <IconButton sx={{ p: { xs: 1, sm: 1.5 } }}>
+            <IconButton
+              onClick={handleShare}
+              sx={{ p: { xs: 1, sm: 1.5 } }}
+              aria-label="Share vehicle"
+            >
               <Share sx={{ fontSize: { xs: 20, sm: 24 } }} />
-            </IconButton>
-            <IconButton sx={{ p: { xs: 1, sm: 1.5 } }}>
-              <Favorite sx={{ fontSize: { xs: 20, sm: 24 } }} />
             </IconButton>
           </Box>
         </Box>

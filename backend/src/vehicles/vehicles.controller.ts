@@ -192,6 +192,35 @@ export class VehiclesController {
     return this.vehiclesService.generateDescription(id);
   }
 
+  @Post("generate-description-preview")
+  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 requests per minute for AI generation
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
+  @ApiTags("admin")
+  @ApiOperation({
+    summary: "Generate AI description preview",
+    description:
+      "Generate a new AI-powered description for vehicle data without saving. Admin authentication required. Rate limited to 3 requests per minute.",
+  })
+  @ApiResponse({
+    status: 200,
+    description: "Description generated successfully",
+    schema: {
+      properties: {
+        description: { type: "string" },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: "Unauthorized - JWT token required",
+  })
+  @ApiResponse({ status: 429, description: "Too many requests - rate limit exceeded" })
+  @ApiResponse({ status: 500, description: "Failed to generate description" })
+  async generateDescriptionPreview(@Body() createVehicleDto: CreateVehicleDto) {
+    return this.vehiclesService.generateDescriptionFromData(createVehicleDto);
+  }
+
   @Delete("bulk/delete")
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth("JWT-auth")

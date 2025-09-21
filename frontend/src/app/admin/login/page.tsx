@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { signIn, getSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
   Container,
@@ -29,6 +29,14 @@ export default function AdminLoginPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { data: session, status } = useSession();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user?.role === 'admin') {
+      router.replace('/admin/dashboard');
+    }
+  }, [status, session, router]);
 
   const {
     register,
@@ -52,14 +60,8 @@ export default function AdminLoginPage() {
       if (result?.error) {
         setError('Invalid username or password');
       } else {
-        // Verify session was created
-        const session = await getSession();
-        if (session) {
-          router.push('/admin/dashboard');
-          router.refresh();
-        } else {
-          setError('Authentication failed. Please try again.');
-        }
+        router.push('/admin/dashboard');
+        router.refresh();
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -68,6 +70,25 @@ export default function AdminLoginPage() {
       setIsLoading(false);
     }
   };
+
+  // Show loading while checking authentication
+  if (status === 'loading') {
+    return (
+      <Box sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  // Don't render login form if already authenticated
+  if (status === 'authenticated' && session?.user?.role === 'admin') {
+    return null;
+  }
 
   return (
     <Box sx={{

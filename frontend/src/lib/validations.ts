@@ -32,7 +32,6 @@ export type LoginFormData = z.infer<typeof loginFormSchema>;
 // Image Upload Validation
 export const imageUploadSchema = z.object({
   files: z.array(z.instanceof(File))
-    .min(1, 'At least one image is required')
     .max(5, 'Maximum 5 images allowed')
     .refine(
       (files) => files.every(file => file.size <= 5 * 1024 * 1024),

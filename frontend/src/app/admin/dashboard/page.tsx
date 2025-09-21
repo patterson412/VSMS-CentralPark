@@ -40,16 +40,6 @@ export default function AdminDashboardPage() {
 
   const isLoading = statsLoading || vehiclesLoading;
 
-  // Debug logging
-  console.log('=== DASHBOARD DEBUG ===');
-  console.log('Stats Data:', statsData);
-  console.log('Stats Loading:', statsLoading);
-  console.log('Stats Error:', statsError);
-  console.log('Vehicle Types:', statsData?.vehicleTypes);
-  console.log('Total Vehicles:', statsData?.totalVehicles);
-  console.log('Recent Vehicles:', recentVehicles);
-  console.log('========================');
-
   const statCards = [
     {
       title: 'Total Vehicles',
@@ -334,7 +324,7 @@ export default function AdminDashboardPage() {
                           color="text.disabled"
                           sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
                         >
-                          {statsData?.totalVehicles === 0 ? 'Add some vehicles to see statistics' : 'Backend may not be running or seeded'}
+                          {statsData?.totalVehicles === 0 ? 'Add some vehicles to see statistics' : 'An error occurred'}
                         </Typography>
                       </Box>
                     )}

@@ -18,6 +18,7 @@ import {
   DialogActions,
   Checkbox,
   Tooltip,
+  Pagination,
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import {
@@ -61,7 +62,7 @@ function AdminVehiclesPageContent() {
     search: searchParams.get('search') || undefined,
     type: searchParams.get('type') || undefined,
     page: searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1,
-    limit: searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 12,
+    limit: searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 6,
     sortBy: (searchParams.get('sortBy') as any) || 'createdAt',
     sortOrder: (searchParams.get('sortOrder') as 'ASC' | 'DESC') || 'DESC',
   });
@@ -181,7 +182,7 @@ function AdminVehiclesPageContent() {
   const clearFilters = () => {
     setFilters({
       page: 1,
-      limit: 12,
+      limit: 6,
       sortBy: 'createdAt',
       sortOrder: 'DESC',
     });
@@ -451,7 +452,8 @@ function AdminVehiclesPageContent() {
                       sx={{
                         position: 'absolute',
                         top: 8,
-                        left: 8,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
                         zIndex: 10,
                         bgcolor: (theme) => `${theme.palette.background.paper}cc`, // 80% opacity
                         borderRadius: 1,
@@ -473,6 +475,27 @@ function AdminVehiclesPageContent() {
           </Box>
         )}
 
+        {/* Pagination */}
+        {vehiclesData && vehiclesData.totalPages > 1 && (
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            mt: { xs: 3, sm: 4 }
+          }}>
+            <Pagination
+              count={vehiclesData.totalPages}
+              page={vehiclesData.page}
+              onChange={(_e, page) => handleFilterChange('page', page)}
+              color="primary"
+              size="medium"
+              sx={{
+                '& .MuiPaginationItem-root': {
+                  fontSize: { xs: '0.875rem', sm: '1rem' }
+                }
+              }}
+            />
+          </Box>
+        )}
 
         {/* Delete Confirmation Dialog */}
         <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
