@@ -14,6 +14,9 @@ COPY public public
 COPY auth.ts ./
 COPY middleware.ts ./
 
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
 RUN npm run build
 
 FROM node:alpine AS production
