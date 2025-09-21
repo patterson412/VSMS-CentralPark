@@ -17,9 +17,6 @@ const getApiBaseUrl = () => {
     ? process.env.BACKEND_URL // Server-side (SSR/API routes) using docker service name
     : process.env.NEXT_PUBLIC_API_URL // Client-side (browser)
 
-  
-  console.log(`BACKEND_URL: ${process.env.BACKEND_URL} , NEXT_PUBLIC_API_URL: ${process.env.NEXT_PUBLIC_API_URL}`);
-
   return url;
 };
 

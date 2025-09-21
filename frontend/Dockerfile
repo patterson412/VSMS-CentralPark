@@ -35,6 +35,4 @@ RUN npm ci --only=production
 COPY --from=development /app/.next ./.next
 COPY --from=development /app/public ./public
 
-EXPOSE $PORT
-
 CMD ["npm", "start"]

@@ -9,23 +9,23 @@ const isProduction = process.env.NODE_ENV === "production";
 const databaseUrl = process.env.DATABASE_URL;
 
 export const AppDataSource = new DataSource(
-  isProduction && databaseUrl
+  isProduction
     ? {
         type: "postgres",
         url: databaseUrl,
         entities: [Admin, Vehicle],
-        synchronize: false,
+        synchronize: true,
         logging: false,
       }
     : {
         type: "mysql",
-        host: process.env.DB_HOST || "127.0.0.1",
+        host: process.env.DB_HOST || "mysql",
         port: parseInt(process.env.DB_PORT || "3306"),
         username: process.env.DB_USERNAME || "root",
         password: process.env.DB_PASSWORD || "password",
         database: process.env.DB_DATABASE || "vehicle_sales",
         entities: [Admin, Vehicle],
-        synchronize: process.env.NODE_ENV === "development",
-        logging: process.env.NODE_ENV === "development",
+        synchronize: true,
+        logging: true,
       }
 );
