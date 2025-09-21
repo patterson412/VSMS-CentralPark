@@ -19,7 +19,6 @@ import { Vehicle } from "../vehicles/entities/vehicle.entity";
             entities: [Admin, Vehicle],
             synchronize: false,
             logging: false,
-            ssl: { rejectUnauthorized: false },
           };
         }
 

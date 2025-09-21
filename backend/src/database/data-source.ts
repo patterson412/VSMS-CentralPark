@@ -16,7 +16,6 @@ export const AppDataSource = new DataSource(
         entities: [Admin, Vehicle],
         synchronize: false,
         logging: false,
-        ssl: { rejectUnauthorized: false },
       }
     : {
         type: "mysql",
