@@ -10,8 +10,9 @@ COPY next.config.js ./
 RUN npm install
 
 COPY src src
-# COPY public public
+COPY public public
 COPY auth.ts ./
+COPY middleware.ts ./
 
 RUN npm run build
 
@@ -24,11 +25,12 @@ WORKDIR /app
 
 COPY package.json ./
 COPY package-lock.json ./
+COPY next.config.js ./
 
 RUN npm ci --only=production
 
 COPY --from=development /app/.next ./.next
-# COPY --from=development /app/public ./public
+COPY --from=development /app/public ./public
 
 EXPOSE $PORT
 

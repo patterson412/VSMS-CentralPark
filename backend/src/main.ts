@@ -13,7 +13,7 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin: process.env.NODE_ENV === "production" ? [process.env.FRONTEND_URL || "https://vsms-frontend.onrender.com"] : true,
+    origin: process.env.NODE_ENV === "production" ? [process.env.FRONTEND_URL || "*"] : true,
     credentials: true,
   });
 
