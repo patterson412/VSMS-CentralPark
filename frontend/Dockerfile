@@ -10,7 +10,7 @@ COPY next.config.js ./
 RUN npm install
 
 COPY src src
-COPY public public
+# COPY public public
 COPY auth.ts ./
 
 RUN npm run build
@@ -28,7 +28,7 @@ COPY package-lock.json ./
 RUN npm ci --only=production
 
 COPY --from=development /app/.next ./.next
-COPY --from=development /app/public ./public
+# COPY --from=development /app/public ./public
 
 EXPOSE $PORT
 
