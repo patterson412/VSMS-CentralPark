@@ -6,8 +6,6 @@ COPY package.json ./
 COPY package-lock.json ./
 COPY tsconfig.json ./
 COPY next.config.js ./
-COPY tailwind.config.js ./
-COPY postcss.config.js ./
 
 RUN npm install
 
