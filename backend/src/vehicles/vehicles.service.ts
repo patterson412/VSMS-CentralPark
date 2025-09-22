@@ -55,25 +55,25 @@ export class VehiclesService {
     }
 
     if (filters?.brand) {
-      queryBuilder.andWhere("vehicle.brand LIKE :brand", {
+      queryBuilder.andWhere("LOWER(vehicle.brand) LIKE LOWER(:brand)", {
         brand: `%${filters.brand}%`,
       });
     }
 
     if (filters?.model) {
-      queryBuilder.andWhere("vehicle.model LIKE :model", {
+      queryBuilder.andWhere("LOWER(vehicle.model) LIKE LOWER(:model)", {
         model: `%${filters.model}%`,
       });
     }
 
     if (filters?.color) {
-      queryBuilder.andWhere("vehicle.color LIKE :color", {
+      queryBuilder.andWhere("LOWER(vehicle.color) LIKE LOWER(:color)", {
         color: `%${filters.color}%`,
       });
     }
 
     if (filters?.engineSize) {
-      queryBuilder.andWhere("vehicle.engineSize LIKE :engineSize", {
+      queryBuilder.andWhere("LOWER(vehicle.engineSize) LIKE LOWER(:engineSize)", {
         engineSize: `%${filters.engineSize}%`,
       });
     }
@@ -96,7 +96,7 @@ export class VehiclesService {
 
     if (filters?.search) {
       queryBuilder.andWhere(
-        "(vehicle.brand LIKE :search OR vehicle.model LIKE :search OR vehicle.description LIKE :search)",
+        "(LOWER(vehicle.brand) LIKE LOWER(:search) OR LOWER(vehicle.model) LIKE LOWER(:search) OR LOWER(vehicle.description) LIKE LOWER(:search))",
         { search: `%${filters.search}%` },
       );
     }
