@@ -1,6 +1,42 @@
 import NextAuth from 'next-auth';
+import { DefaultSession } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { authApi } from '@/lib/api';
+
+declare module 'next-auth' {
+  interface Session {
+    accessToken?: string;
+    user: {
+      id: string;
+      username: string;
+      role: string;
+      createdAt: string;
+    } & DefaultSession['user'];
+  }
+
+  interface User {
+    accessToken?: string;
+    role?: string;
+    user?: {
+      id: string;
+      username: string;
+      role: string;
+      createdAt: string;
+    };
+  }
+}
+
+declare module '@auth/core/jwt' {
+  interface JWT {
+    accessToken?: string;
+    user?: {
+      id?: string;
+      username?: string;
+      role?: string;
+      createdAt?: string;
+    };
+  }
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -45,22 +81,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.accessToken = (user as any).accessToken;
+        token.accessToken = user.accessToken;
         token.user = {
-          ...(user as any).user,
-          role: (user as any).role || 'admin',
+          ...user.user,
+          role: user.role || 'admin',
         };
       }
       return token;
     },
     async session({ session, token }) {
-      session.accessToken = token.accessToken as string;
+      session.accessToken = token.accessToken;
       session.user = {
         ...session.user,
-        id: (token.user as any)?.id || '',
-        username: (token.user as any)?.username || '',
-        role: (token.user as any)?.role || 'admin',
-        createdAt: (token.user as any)?.createdAt || '',
+        id: token.user?.id || '',
+        username: token.user?.username || '',
+        role: token.user?.role || 'admin',
+        createdAt: token.user?.createdAt || '',
       };
       return session;
     },
