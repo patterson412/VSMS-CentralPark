@@ -5,9 +5,9 @@
 
 echo "🔧 Setting up VSMS environment files..."
 
-# Generate random secrets
-JWT_SECRET=$(openssl rand -base64 32)
-AUTH_SECRET=$(openssl rand -base64 32)
+# Generate random secrets with Windows fallback
+JWT_SECRET=$(openssl rand -base64 32 2>/dev/null || echo "your-super-secret-jwt-key-here-replace-with-strong-key")
+AUTH_SECRET=$(openssl rand -base64 32 2>/dev/null || echo "your-nextauth-secret-key-replace-with-strong-key")
 
 # Create root .env file
 echo "📁 Creating root .env file..."

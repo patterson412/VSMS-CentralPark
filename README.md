@@ -21,6 +21,8 @@ cd frontend && npm install && cd ..
    ```
    Then update `backend/.env` with your AWS credentials and API keys.
 
+   *Note: Windows users may need Git Bash or can manually replace the generated placeholder secrets.*
+
 3. **Run the application:**
 ```bash
 docker-compose up
