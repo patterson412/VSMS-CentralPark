@@ -31,8 +31,7 @@ docker-compose up
 4. **Seed the database:**
 ```bash
 # Wait for backend to start, then seed data
-cd backend
-npm run seed:all
+docker-compose exec backend npm run seed:all
 
 # For production database (requires DATABASE_URL env var in the backend):
 # NODE_ENV=production npm run seed:all

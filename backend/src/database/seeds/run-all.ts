@@ -17,8 +17,8 @@ async function runAllSeeds() {
 
     // Clear existing data
     console.log("🗑️  Clearing existing data...");
-    await vehicleRepository.delete({});
-    await adminRepository.delete({});
+    await vehicleRepository.clear();
+    await adminRepository.clear();
     console.log("   ✅ Database cleared\n");
 
     // Seed admin first
