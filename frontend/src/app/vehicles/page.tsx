@@ -59,6 +59,7 @@ function VehiclesPageContent() {
     type: searchParams.get('type') || undefined,
     brand: searchParams.get('brand') || undefined,
     model: searchParams.get('model') || undefined,
+    engineSize: searchParams.get('engineSize') || undefined,
     year: searchParams.get('year') ? parseInt(searchParams.get('year')!) : undefined,
     minPrice: searchParams.get('minPrice') ? parseInt(searchParams.get('minPrice')!) : undefined,
     maxPrice: searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice')!) : undefined,
@@ -79,6 +80,7 @@ function VehiclesPageContent() {
     type: filters.type,
     brand: filters.brand,
     model: filters.model,
+    engineSize: filters.engineSize,
     year: filters.year,
     minPrice: filters.minPrice,
     maxPrice: filters.maxPrice,
@@ -172,6 +174,7 @@ function VehiclesPageContent() {
         type: undefined,
         brand: undefined,
         model: undefined,
+        engineSize: undefined,
         year: undefined,
         minPrice: undefined,
         maxPrice: undefined,
@@ -397,6 +400,17 @@ function VehiclesPageContent() {
                   label="Model"
                   value={filters.model || ''}
                   onChange={(e) => handleFilterChange('model', e.target.value)}
+                  fullWidth
+                  size="small"
+                />
+              </Grid>
+
+              {/* Engine Size */}
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                <TextField
+                  label="Engine Size"
+                  value={filters.engineSize || ''}
+                  onChange={(e) => handleFilterChange('engineSize', e.target.value)}
                   fullWidth
                   size="small"
                 />

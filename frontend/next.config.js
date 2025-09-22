@@ -21,10 +21,7 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ['@mui/material', '@mui/icons-material'],
-  },
-  generateBuildId: async () => {
-    return 'build'
-  },
+  }
 }
 
 module.exports = nextConfig

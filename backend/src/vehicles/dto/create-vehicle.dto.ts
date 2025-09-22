@@ -86,7 +86,7 @@ export class CreateVehicleDto {
 
   @ApiProperty({
     description: "Array of image URLs",
-    example: ["https://cloudfront-url.com/vehicle1/image1.jpg"],
+    example: ["https://cloudfront-url.com/vehicles/123/image-1.jpg"],
     type: [String],
     required: false,
   })

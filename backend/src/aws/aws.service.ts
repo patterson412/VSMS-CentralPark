@@ -9,7 +9,6 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
-import * as path from "path";
 
 @Injectable()
 export class AwsService {
@@ -115,26 +114,6 @@ export class AwsService {
         `File too large: ${file.size} bytes. Maximum size: ${this.MAX_FILE_SIZE} bytes (5MB)`,
       );
     }
-
-    // Additional security: Check file signature (magic numbers)
-    if (!this.isValidImageSignature(file.buffer)) {
-      throw new BadRequestException("Invalid image file signature");
-    }
-  }
-
-  private isValidImageSignature(buffer: Buffer): boolean {
-    const signatures = {
-      jpeg: [0xff, 0xd8, 0xff],
-      png: [0x89, 0x50, 0x4e, 0x47],
-      webp: [0x52, 0x49, 0x46, 0x46], // RIFF header for WebP
-    };
-
-    for (const [, signature] of Object.entries(signatures)) {
-      if (signature.every((byte, index) => buffer[index] === byte)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   private async uploadSingleImage(

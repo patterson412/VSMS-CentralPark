@@ -21,7 +21,7 @@ describe("VehiclesService", () => {
     year: 2023,
     price: 28500,
     description: "Test description",
-    images: ["image1.jpg"],
+    images: ["https://cloudfront-url.com/vehicles/123/image1.jpg"],
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -103,7 +103,7 @@ describe("VehiclesService", () => {
         data: vehicles,
         total,
         page: 1,
-        limit: 10,
+        limit: 6,
         totalPages: 1,
       });
     });
@@ -307,8 +307,8 @@ describe("VehiclesService", () => {
     it("should delete multiple vehicles", async () => {
       const ids = ["1", "2", "3"];
       const vehiclesToDelete = [
-        { ...mockVehicle, id: "1", images: ["image1.jpg"] },
-        { ...mockVehicle, id: "2", images: ["image2.jpg"] },
+        { ...mockVehicle, id: "1", images: ["https://cloudfront-url.com/vehicles/1/image1.jpg"] },
+        { ...mockVehicle, id: "2", images: ["https://cloudfront-url.com/vehicles/2/image2.jpg"] },
         { ...mockVehicle, id: "3", images: [] },
       ];
 

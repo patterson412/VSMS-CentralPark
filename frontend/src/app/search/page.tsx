@@ -57,6 +57,7 @@ function SearchPageContent() {
     type: filters.type,
     brand: filters.brand,
     color: filters.color,
+    engineSize: filters.engineSize,
     year: filters.year,
     page: filters.page,
     limit: filters.limit,
@@ -140,6 +141,7 @@ function SearchPageContent() {
         type: undefined,
         brand: undefined,
         color: undefined,
+        engineSize: undefined,
         year: undefined,
         page: undefined,
       },
@@ -149,7 +151,7 @@ function SearchPageContent() {
     );
   };
 
-  const hasSearched = Boolean(searchQuery || filters.type || filters.brand || filters.color || filters.year);
+  const hasSearched = Boolean(searchQuery || filters.type || filters.brand || filters.color || filters.engineSize || filters.year);
   const hasResults = vehiclesData?.data?.length || 0;
 
   return (
@@ -278,6 +280,16 @@ function SearchPageContent() {
                         ))}
                       </Select>
                     </FormControl>
+                  </Grid>
+
+                  <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                    <TextField
+                      fullWidth
+                      label="Engine Size"
+                      size="small"
+                      value={filters.engineSize || ''}
+                      onChange={(e) => handleFilterChange('engineSize', e.target.value)}
+                    />
                   </Grid>
 
                   <Grid size={{ xs: 12, sm: 6, md: 3 }}>

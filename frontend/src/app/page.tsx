@@ -79,7 +79,7 @@ export default function HomePage() {
                     }
                   }}
                 >
-                  Advanced Search
+                  Quick Search
                 </Button>
               </Box>
             </Box>

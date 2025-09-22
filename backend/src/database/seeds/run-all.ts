@@ -1,9 +1,25 @@
+import { AppDataSource } from "../data-source";
+import { Admin } from "../../auth/entities/admin.entity";
+import { Vehicle } from "../../vehicles/entities/vehicle.entity";
 import { seedAdmin } from "./admin.seed";
 import { seedVehicles } from "./vehicles.seed";
 
 async function runAllSeeds() {
   try {
-    console.log("🌱 Starting comprehensive database seeding...\n");
+    console.log("🌱 Starting comprehensive database seeding (with data reset)...\n");
+
+    if (!AppDataSource.isInitialized) {
+      await AppDataSource.initialize();
+    }
+
+    const adminRepository = AppDataSource.getRepository(Admin);
+    const vehicleRepository = AppDataSource.getRepository(Vehicle);
+
+    // Clear existing data
+    console.log("🗑️  Clearing existing data...");
+    await vehicleRepository.delete({});
+    await adminRepository.delete({});
+    console.log("   ✅ Database cleared\n");
 
     // Seed admin first
     await seedAdmin();

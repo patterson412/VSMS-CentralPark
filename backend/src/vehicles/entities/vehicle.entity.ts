@@ -72,7 +72,7 @@ export class Vehicle {
 
   @ApiProperty({
     description: 'Array of image URLs from S3/CloudFront',
-    example: ['https://cloudfront-url.com/vehicle1/image1.jpg', 'https://cloudfront-url.com/vehicle1/image2.jpg'],
+    example: ['https://cloudfront-url.com/vehicles/123/image-1.jpg', 'https://cloudfront-url.com/vehicles/123/image-2.jpg'],
     type: [String],
   })
   @Column('json')

@@ -25,7 +25,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             return {
               id: data.user.id,
               name: data.user.username,
-              email: `${data.user.username}@admin.local`, // NextAuth requires email
               accessToken: data.access_token,
               role: 'admin',
               user: {
