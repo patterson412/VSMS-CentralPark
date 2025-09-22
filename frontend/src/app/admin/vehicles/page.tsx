@@ -63,7 +63,7 @@ function AdminVehiclesPageContent() {
     type: searchParams.get('type') || undefined,
     page: searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1,
     limit: searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 6,
-    sortBy: (searchParams.get('sortBy') as any) || 'createdAt',
+    sortBy: searchParams.get('sortBy') || 'createdAt',
     sortOrder: (searchParams.get('sortOrder') as 'ASC' | 'DESC') || 'DESC',
   });
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -108,7 +108,7 @@ function AdminVehiclesPageContent() {
     const [sortBy, sortOrder] = sortValue.split('_');
     setFilters(prev => ({
       ...prev,
-      sortBy: sortBy as any,
+      sortBy: sortBy,
       sortOrder: sortOrder as 'ASC' | 'DESC',
       page: 1,
     }));

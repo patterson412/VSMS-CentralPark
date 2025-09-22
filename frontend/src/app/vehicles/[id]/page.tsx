@@ -130,7 +130,7 @@ export default function VehicleDetailsPage() {
             }}>
               <Chip
                 label={vehicle.type}
-                color={getVehicleTypeColor(vehicle.type) as any}
+                color={getVehicleTypeColor(vehicle.type)}
                 sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
               />
               <Typography variant="body2" sx={{

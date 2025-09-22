@@ -27,7 +27,7 @@ import { useVehicles, useVehicleStats } from '@/hooks/use-vehicles';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, getVehicleTypeColor } from '@/lib/utils';
 
 export default function AdminDashboardPage() {
   const { data: statsData, isLoading: statsLoading, error: statsError } = useVehicleStats();
@@ -64,22 +64,6 @@ export default function AdminDashboardPage() {
     },
   ];
 
-  const getTypeColor = (type: string) => {
-    switch (type.toLowerCase()) {
-      case 'car':
-        return 'primary';
-      case 'suv':
-        return 'secondary';
-      case 'truck':
-        return 'error';
-      case 'bike':
-        return 'warning';
-      case 'van':
-        return 'info';
-      default:
-        return 'default';
-    }
-  };
 
   return (
     <AdminLayout>
@@ -289,7 +273,7 @@ export default function AdminDashboardPage() {
                             <Chip
                               label={type.type}
                               size="small"
-                              color={getTypeColor(type.type) as any}
+                              color={getVehicleTypeColor(type.type)}
                               sx={{
                                 mr: 1,
                                 fontSize: { xs: '0.75rem', sm: '0.875rem' }

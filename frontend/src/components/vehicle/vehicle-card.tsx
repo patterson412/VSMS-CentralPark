@@ -176,7 +176,7 @@ export function VehicleCard({
           <Chip
             label={vehicle.type}
             size="small"
-            color={getVehicleTypeColor(vehicle.type) as any}
+            color={getVehicleTypeColor(vehicle.type)}
             sx={{
               fontSize: { xs: '0.6rem', sm: '0.75rem' },
               height: { xs: 20, sm: 24 }

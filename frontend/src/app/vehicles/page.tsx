@@ -65,7 +65,7 @@ function VehiclesPageContent() {
     maxPrice: searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice')!) : undefined,
     page: searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1,
     limit: searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 6,
-    sortBy: (searchParams.get('sortBy') as any) || 'createdAt',
+    sortBy: searchParams.get('sortBy') || 'createdAt',
     sortOrder: (searchParams.get('sortOrder') as 'ASC' | 'DESC') || 'DESC',
   });
   const [priceRange, setPriceRange] = useState<number[]>([
@@ -115,7 +115,7 @@ function VehiclesPageContent() {
     const [sortBy, sortOrder] = sortValue.split('_');
     setFilters(prev => ({
       ...prev,
-      sortBy: sortBy as any,
+      sortBy: sortBy,
       sortOrder: sortOrder as 'ASC' | 'DESC',
       page: 1,
     }));
