@@ -18,6 +18,9 @@ export class Vehicle {
   @Column({ length: 50 })
   type: string;
 
+  @Column({ type: 'boolean', default: false })
+  featured: boolean;
+
   @ApiProperty({
     description: 'Vehicle brand',
     example: 'Toyota',

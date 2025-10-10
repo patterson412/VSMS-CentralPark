@@ -105,9 +105,19 @@ export class VehiclesService {
     const sortBy = filters?.sortBy || "createdAt";
     const sortOrder = filters?.sortOrder || "DESC";
 
-    const validSortFields = ["price", "year", "createdAt", "brand", "model"];
-    if (validSortFields.includes(sortBy)) {
-      queryBuilder.orderBy(`vehicle.${sortBy}`, sortOrder);
+    const validSortFields = ["price", "year", "createdAt", "brand", "model", "featured"];
+    if (sortBy === "featured") {
+      // Always sort featured vehicles first, then by createdAt DESC (or another secondary sort)
+      queryBuilder.orderBy("vehicle.featured", "DESC")
+                  .addOrderBy("vehicle.createdAt", "DESC");
+    } else if (validSortFields.includes(sortBy)) {
+      // If not sorting by featured, still sort featured vehicles first by default
+      queryBuilder.orderBy("vehicle.featured", "DESC")
+                  .addOrderBy(`vehicle.${sortBy}`, sortOrder);
+    } else {
+      // Default sort: featured first, then createdAt DESC
+      queryBuilder.orderBy("vehicle.featured", "DESC")
+                  .addOrderBy("vehicle.createdAt", "DESC");
     }
 
     // Get total count
